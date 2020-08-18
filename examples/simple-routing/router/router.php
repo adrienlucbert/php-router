@@ -13,11 +13,11 @@ class Router extends MountPoint
      *
      * @param string $path router base path
      */
-    function __construct($path = '/')
+    function __construct()
     {
-        parent::__construct($path, ['*'], function(&$req, $next) {
+        parent::__construct(null, ['*'], function(&$req, $next) {
             $next();
-        });
+        }, false, null);
     }
 
   /**
@@ -29,7 +29,7 @@ class Router extends MountPoint
      * @since 1.0
      */
     public function use($path, ...$mountpoints) {
-        $this->_register($path, ['*'], ...$mountpoints);
+        $this->_register($path, ['*'], false, ...$mountpoints);
     }
 
      /**
@@ -41,7 +41,7 @@ class Router extends MountPoint
      * @since 1.0
      */
     public function get($path, ...$mountpoints) {
-        $this->_register($path, ['GET'], ...$mountpoints);
+        $this->_register($path, ['GET'], true, ...$mountpoints);
     }
 
      /**
@@ -53,7 +53,7 @@ class Router extends MountPoint
      * @since 1.0
      */
     public function post($path, ...$mountpoints) {
-        $this->_register($path, ['POST'], ...$mountpoints);
+        $this->_register($path, ['POST'], true, ...$mountpoints);
     }
 }
 ?>
