@@ -28,12 +28,14 @@ class Path
      *
      * @param string $pattern pattern to match
      * @param string $path path to match
+     * @param bool $strict if false, matches strings that begin with the 
+     * pattern, if true, matches strings that match the pattern exactly
      *
      * @return bool
      *
      * @since 1.0
      */
-    public static function glob_match($pattern, $path)
+    public static function glob_match($pattern, $path, $strict = false)
     {
         $expr = preg_replace_callback('/[\\\\^$.[\\]|()?*+{}\\-\\/]/', function($matches) {
             switch ($matches[0]) {
@@ -45,7 +47,7 @@ class Path
                 return '\\'.$matches[0];
             }
         }, $pattern);
-        $expr = '/'.$expr.'/i';
+        $expr = '/'.$expr.($strict ? '$' : '').'/i';
         return (bool)preg_match($expr, $path);
     }
 }

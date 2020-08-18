@@ -27,7 +27,8 @@ class App extends Router
     public function execute()
     {
         $req = array(
-            'path' => $_SERVER['REQUEST_URI'], // requested uri
+            'path' => $this->path, // current middleware uri
+            'originalUrl' => $_SERVER['REQUEST_URI'], // requested uri
             'host' => $_SERVER['HTTP_HOST'], // server http host
             'ip' => $_SERVER['REMOTE_ADDR'], // remote client ip address
             'method' => $_SERVER['REQUEST_METHOD'] // http request method

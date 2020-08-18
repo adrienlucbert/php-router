@@ -1,38 +1,19 @@
 <?php
+// include router/index.php which is responsible for including the files
+// needed to work with PHP Router
 require_once('router/index.php');
 
+// create an App object, against which you will then register routes
 $app = new App();
 
-$app->use('*', function($req, callable $next) {
-    // this middleware will be executed before every other
-    // may be used for access control or logging
+// register a new route to call when requested uri matches '/' in http method GET
+$app->get('/', function(&$req, callable $next) {
+    // do whatever you want this route to do
+    print_r($req);
 
     // execute next route matching the requested uri
     $next();
 });
 
-$app->get('/home', function(&$req, callable $next) {
-    require_once('views/home.html');
-});
-
-$app->use('/admin', function(&$req, callable $next) {
-    // this middleware will be used for every routes below /admin
-    // may be used for access control
-    $next();
-});
-
-$app->get('/admin', function(&$req, callable $next) {
-    require_once('views/admin.html');
-});
-
-$app->use('*', function(&$req, callable $next) {
-    // this middleware will be executed after every other, if middlewares chain 
-    // was not broken before ($next not called in a previous middleware)
-
-    // it may be used for handling 404 not found error
-    http_response_code(404);
-    require_once('views/404.html');
-});
-
+// execute application mountpoints according to the requested uri
 $app->execute();
-?>

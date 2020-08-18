@@ -51,19 +51,31 @@ class MountPoint
     private $_lastChildIndex = 0;
 
     /**
+     * Routing strict mode
+     * In strict mode, the mountpoint is executable only if its path is 
+     * strictly matched by the requested uri
+     *
+     * @since 1.0
+     */
+    private $_strict = true;
+
+    /**
      * Create a new MountPoint object
      *
      * @param string $path mount point path
      * @param [string] $methods mountpoint http methods
      * @param function $handler function called by execute method
+     * @param bool $strict mountpoint strict mode
+     * @param MountPoint $parent parent mountpoint
      *
      * @since 1.0
      */
-    function __construct($path, $methods, callable $handler, $parent = null)
+    function __construct($path, $methods, callable $handler, $strict = true, $parent = null)
     {
         $this->path = $path;
         $this->methods = $methods;
         $this->_handler = $handler;
+        $this->_strict = $strict;
         $this->_parent = $parent;
     }
 
@@ -72,24 +84,33 @@ class MountPoint
      *
      * @param string $path mountpoints path
      * @param [string] $methods mountpoints http methods
-     * @param [MountPoint|function] $mountpoints middlewares and/or mountpoints
+     * @param bool $strict mountpoints strict mode
+     * @param [MountPoint|function] $items middlewares and/or mountpoints
      * 
      * @since 1.0
      */
-    protected function _register($path, $methods, ...$mountpoints)
+    protected function _register($path, $methods, $strict, ...$items)
     {
-        foreach ($mountpoints as $mountpoint) {
-            if (!($mountpoint instanceof MountPoint)) {
-                $mountpoint = new MountPoint(\Path::join($this->path, $path), $methods, $mountpoint, $this);
+        foreach ($items as $item) {
+            if (!($item instanceof MountPoint)) {
+                $item = new MountPoint($path, $methods, $item, $strict, $this);
+            } else {
+                $item->path = $path;
+                $item->methods = $methods;
+                $item->_strict = $strict;
+                $item->_parent = $this;
             }
-            array_push($this->_children, $mountpoint);
+            array_push($this->_children, $item);
         }
     }
  
     /**
      * Finds next executable mount point
      *
-     * @return function null if not found
+     * @param string $method request http method
+     * @param string $path request uri
+     *
+     * @return MountPoint null if not found
      * 
      * @since 1.0
      */
@@ -98,7 +119,8 @@ class MountPoint
         while ($this->_lastChildIndex < count($this->_children)) {
             $child = $this->_children[$this->_lastChildIndex];
             $matchesMethod = count(array_intersect([ '*', $method ], $child->methods)) != 0;
-            if ($matchesMethod && \Path::glob_match($child->path, $path)) {
+            $matchesPath = Path::glob_match($child->_getFullPath(), $path, $child->_strict);
+            if ($matchesMethod && $matchesPath) {
                 ++$this->_lastChildIndex;
                 return $child;
             }
@@ -111,6 +133,13 @@ class MountPoint
         return null;
     }
 
+    protected function _getFullPath()
+    {
+        if ($this->_parent == null)
+            return $this->path;
+        return Path::join($this->_parent->_getFullPath(), $this->path);
+    }
+
     /**
      * Execute mount point handler function
      *
@@ -118,10 +147,11 @@ class MountPoint
      *
      * @since 1.0
      */
-    public function _exec(&$req)
+    protected function _exec(&$req)
     {
+        $req['path'] = preg_replace('/\*/', '', $this->path);
         ($this->_handler)($req, function() use(&$req) {
-            $next = $this->_findNext($req['method'], $req['path']);
+            $next = $this->_findNext($req['method'], $req['originalUrl']);
             if ($next != null)
                 $next->_exec($req);
         });
