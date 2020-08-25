@@ -24,6 +24,26 @@ class Path
     }
 
     /**
+     * Normalize a path, removing useless or ambiguous
+     *
+     * Removes leading slash (/)
+     * Removes duplicate slashes (//)
+     *
+     * @param string $path path to normalize
+     *
+     * @return string
+     *
+     * @since 1.0
+     */
+    public static function normalize($path)
+    {
+        if ($path !== '/')
+            $path = rtrim($path, '/');
+        $path = str_replace('//', '/', $path);
+        return $path;
+    }
+
+    /**
      * Determines if a path matches a glob pattern
      *
      * @param string $pattern pattern to match
@@ -37,8 +57,8 @@ class Path
      */
     public static function glob_match($pattern, $path, $strict = false)
     {
-        $expr = trim($pattern, '/');
-        $path = trim($path, '/');
+        $expr = Path::normalize($pattern);
+        $path = Path::normalize($path);
         $expr = preg_replace_callback('/[\\\\^$.[\\]|()?*+{}\\-\\/]/', function($matches) {
             switch ($matches[0]) {
             case '*':
