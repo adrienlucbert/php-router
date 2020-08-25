@@ -37,6 +37,8 @@ class Path
      */
     public static function glob_match($pattern, $path, $strict = false)
     {
+        $expr = trim($pattern, '/');
+        $path = trim($path, '/');
         $expr = preg_replace_callback('/[\\\\^$.[\\]|()?*+{}\\-\\/]/', function($matches) {
             switch ($matches[0]) {
             case '*':
@@ -46,7 +48,7 @@ class Path
             default:
                 return '\\'.$matches[0];
             }
-        }, $pattern);
+        }, $expr);
         $expr = '/'.$expr.($strict ? '$' : '').'/i';
         return (bool)preg_match($expr, $path);
     }
