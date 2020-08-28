@@ -11,8 +11,5 @@
             "email": "adrien.lucbert.pro@gmail.com",
             "role": "Developer"
         }
-    ],
-    "archive": {
-        "exclude": ["examples"]
-    }
+    ]
 }
