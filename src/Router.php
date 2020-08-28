@@ -21,7 +21,7 @@ class Router extends MountPoint
         }, false, null);
     }
 
-  /**
+    /**
      * Register mountpoints as children of this router for any http method
      *
      * @param string $path mountpoints path
@@ -33,28 +33,23 @@ class Router extends MountPoint
         $this->_register($path, ['*'], false, ...$mountpoints);
     }
 
-     /**
-     * Register mountpoints as children of this router for GET http method
-     *
-     * @param string $path mountpoints path
-     * @param [MountPoint|function] $mountpoints middlewares and/or mountpoints
+    /**
+     * List of supported http methods
      *
      * @since 1.0
      */
-    public function get($path, ...$mountpoints) {
-        $this->_register($path, ['GET'], true, ...$mountpoints);
-    }
+    private $_methods = [
+        'GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'COPY', 'HEAD', 'OPTIONS',
+        'LINK', 'UNLINK', 'PURGE', 'LOCK', 'UNLOCK', 'PROPFIND', 'VIEW'
+    ];
 
-     /**
-     * Register mountpoints as children of this router for POST http method
-     *
-     * @param string $path mountpoints path
-     * @param [MountPoint|function] $mountpoints middlewares and/or mountpoints
-     *
-     * @since 1.0
-     */
-    public function post($path, ...$mountpoints) {
-        $this->_register($path, ['POST'], true, ...$mountpoints);
+    public function __call($func, $params) {
+        $method = strtoupper($func);
+        if (in_array(strtoupper($func), $this->_methods)) {
+            $path = $params[0];
+            $mountpoints = array_slice($params, 1);
+            $this->_register($path, [$method], true, ...$mountpoints);
+        }
     }
 }
 ?>
