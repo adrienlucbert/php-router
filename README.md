@@ -3,28 +3,30 @@
 This project is a minimal router framework for PHP, inspired by
 [ExpressJS](https://expressjs.com/).
 
-## Examples
+## Installation
 
-You can find examples in the `/examples` directory.
+Use composer to manage and dependencies and download PHP Router.
 
-## Usage
+```
+composer require adrienlucbert/php-router
+```
 
-You may copy `/lib` and `/router` directories in your project's root directory
-in order to use PHP Router.
+## Example
 
-You may also use with a `.htaccess` file redirecting all requests to a single
-file. This file will be responsible for describing routes: we we call it
-`index.php` for the purpose of this example, but you may call it as you wish,
+> :information_source: find more examples under `/examples` directory
+
+> :warning: You may also use with a `.htaccess` file redirecting all requests
+to a single file. This file will be responsible for describing routes: we call
+it `index.php` for the purpose of this example, but you may call it as you wish,
 just make sure the `.htaccess` file redirects to it.  
-To see an example `.htaccess`, see examples in the `/examples` directory.
-
-See a basic routing example herebelow:
 
 ```php
 <?php
-// include router/index.php which is responsible for including the files
-// needed to work with PHP Router
-require_once('router/index.php');
+// use composer autoload to include package files
+require __DIR__ . '/vendor/autoload.php';
+
+// alias \PHPRouter\App class
+use \PHPRouter\App;
 
 // create an App object, against which you will then register routes
 $app = new App();
@@ -41,4 +43,3 @@ $app->get('/', function(&$req, callable $next) {
 // execute application mountpoints according to the requested uri
 $app->execute();
 ```
-
