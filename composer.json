@@ -1,0 +1,18 @@
+{
+    "name": "adrienlucbert/php-router",
+    "type": "library",
+    "description": "Minimal router framework for PHP, inspired by ExpressJS.",
+    "keywords": ["router", "routing", "express", "expressjs"],
+    "homepage": "https://github.com/adrienlucbert/php-router",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Adrien Lucbert",
+            "email": "adrien.lucbert.pro@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "archive": {
+        "exclude": ["examples"]
+    }
+}
