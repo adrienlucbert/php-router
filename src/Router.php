@@ -22,6 +22,39 @@ class Router extends MountPoint
     }
 
     /**
+     * Return middleware serving files in $path directory
+     *
+     * @param string $path static files directory
+     *
+     * @return function
+     *
+     * @since 1.0
+     */
+    static public function static($path) {
+        return function(&$req, callable $next) use ($path){
+            $file = Path::join($path, str_replace($req['path'], '', $req['originalUrl']));
+            if (!file_exists($file)) {
+                http_response_code(404);
+                return;
+            }
+            $ext = pathinfo($file, PATHINFO_EXTENSION);
+            $mime_overrides = array(
+                'css' => 'text/css',
+                'webp' => 'image/webp',
+                'svg' => 'image/svg+xml'
+            );
+            if (array_key_exists($ext, $mime_overrides)) {
+                $mime = $mime_overrides[$ext];
+            } else {
+                $finfo = finfo_open(FILEINFO_MIME_TYPE);
+                $mime = finfo_file($finfo, $file);
+            }
+            header('Content-Type: ' . $mime);
+            require($file);
+        };
+    }
+
+    /**
      * Register mountpoints as children of this router for any http method
      *
      * @param string $path mountpoints path
