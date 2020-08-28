@@ -1,9 +1,8 @@
 <?php
-require_once('./router/index.php');
+use \PHPRouter\Router;
 
 $homeRouter = new Router();
 
 $homeRouter->get('/', function(&$req, callable $next) {
-    require_once('views/home.html');
+    require __DIR__ . '/../views/home.html';
 });
-?>

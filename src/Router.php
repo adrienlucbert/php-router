@@ -1,5 +1,6 @@
 <?php
-require_once('./router/mountpoint.php');
+
+namespace PHPRouter;
 
 /**
  * Router

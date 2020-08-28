@@ -1,5 +1,6 @@
 <?php
-require_once('router/router.php');
+
+namespace PHPRouter;
 
 /**
  * Application utility class

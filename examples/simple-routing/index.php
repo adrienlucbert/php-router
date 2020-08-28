@@ -1,7 +1,9 @@
 <?php
-// include router/index.php which is responsible for including the files
-// needed to work with PHP Router
-require_once('router/index.php');
+// use composer autoload to include package files
+require __DIR__ . '/vendor/autoload.php';
+
+// alias \PHPRouter\App class
+use \PHPRouter\App;
 
 // create an App object, against which you will then register routes
 $app = new App();

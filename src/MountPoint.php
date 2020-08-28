@@ -1,5 +1,6 @@
 <?php
-require_once('lib/path.php');
+
+namespace PHPRouter;
 
 /**
  * Executable mount point (router, middleware)

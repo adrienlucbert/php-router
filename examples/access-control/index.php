@@ -1,41 +1,23 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 session_start();
 
-require_once('router/index.php');
+require __DIR__ . '/vendor/autoload.php';
 
-echo '<pre>';
+use \PHPRouter\App;
 
 $app = new App();
 
-require_once('./routers/home.php');
-$app->use('/', $homeRouter);
+require './routers/index.php';
+$app->use('/', $routers);
 
-require_once('./routers/auth.php');
-$app->use('/auth', $authRouter);
-
-$app->use('/admin', function(&$req, callable $next) {
-    // this middleware will be used for every routes below /admin
-    // may be used for access control
-    if (!$_SESSION['logged']) {
-        // if user is not logged in, don't call $next to stop here
-        http_response_code(401);
-        echo 'Restricted area!';
-    } else {
-        // if user is logged in, let him go through /admin
-        $next();
-    }
-});
-
-$app->get('/admin/me', function(&$req, callable $next) {
-    require_once('views/admin.html');
-});
-
+// fallback route: if none was matched before, throw 404 error
 $app->use('/', function(&$req, callable $next) {
     http_response_code(404);
-    require_once('views/404.html');
+    require __DIR__ . '/views/404.html';
 });
 
 $app->execute();
-
-echo '</pre>';
-?>

@@ -1,0 +1,5 @@
+{
+    "require": {
+        "adrienlucbert/php-router": "^1.0"
+    }
+}
