@@ -150,7 +150,7 @@ class MountPoint
      */
     protected function _exec(&$req)
     {
-        $req['path'] = preg_replace('/\*/', '', $this->path);
+        $req['path'] = preg_replace('/\*/', '', $this->_getFullPath());
         ($this->_handler)($req, function() use(&$req) {
             $next = $this->_findNext($req['method'], $req['originalUrl']);
             if ($next != null)
