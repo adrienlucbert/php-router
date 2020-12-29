@@ -116,7 +116,7 @@ class Router extends MountPoint
     static public function static($path) {
         return function(&$req, callable $next) use ($path){
             $php_exts = ['php', 'php3', 'php4', 'php5', 'php7', 'phps', 'phtml'];
-            $file = preg_replace("/^" . preg_quote($req['path'], '/') . "/", '', $req['originalUrl'], 1);
+            $file = preg_replace("/^" . preg_quote($req['path'], '/') . "/", '', $req['originalUrl']['path'], 1);
             $file = Path::join($path, $file);
             $file = self::resolveFile($file);
             if (!$file) {

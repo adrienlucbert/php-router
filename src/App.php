@@ -29,7 +29,7 @@ class App extends Router
     {
         $req = array(
             'path' => $this->path, // current middleware uri
-            'originalUrl' => $_SERVER['REQUEST_URI'], // requested uri
+            'originalUrl' => parse_url($_SERVER['REQUEST_URI']), // requested uri
             'host' => $_SERVER['HTTP_HOST'], // server http host
             'ip' => $_SERVER['REMOTE_ADDR'], // remote client ip address
             'method' => $_SERVER['REQUEST_METHOD'] // http request method
