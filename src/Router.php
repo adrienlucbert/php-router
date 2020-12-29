@@ -32,8 +32,9 @@ class Router extends MountPoint
      */
     static public function static($path) {
         return function(&$req, callable $next) use ($path){
-            $file = Path::join($path, str_replace($req['path'], '', $req['originalUrl']));
-            if (!file_exists($file)) {
+            $file = preg_replace("/^" . preg_quote($req['path'], '/') . "/", '', $req['originalUrl'], 1);
+            $file = Path::join($path, $file);
+            if (!file_exists($file) || is_dir($file)) {
                 http_response_code(404);
                 return;
             }
