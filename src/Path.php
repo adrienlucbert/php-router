@@ -72,7 +72,7 @@ class Path
                 return '\\'.$matches[0];
             }
         }, $expr);
-        $expr = '/'.$expr.($strict ? '$' : '').'/i';
+        $expr = '/^'.$expr.($strict ? '$' : '').'/i';
         return (bool)preg_match($expr, $path);
     }
 }
