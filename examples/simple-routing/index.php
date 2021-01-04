@@ -11,7 +11,9 @@ $app = new App();
 // register a new route to call when requested uri matches '/' in http method GET
 $app->get('/', function(&$req, callable $next) {
     // do whatever you want this route to do
+    echo '<pre>';
     print_r($req);
+    echo '</pre>';
 
     // execute next route matching the requested uri
     $next();

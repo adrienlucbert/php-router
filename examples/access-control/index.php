@@ -17,7 +17,7 @@ $app->use('/', $routers);
 // fallback route: if none was matched before, throw 404 error
 $app->use('/', function(&$req, callable $next) {
     http_response_code(404);
-    require __DIR__ . '/views/404.html';
+    $req['require'](__DIR__ . '/views/404.html');
 });
 
 $app->execute();

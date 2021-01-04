@@ -124,7 +124,7 @@ class Router extends MountPoint
                 return;
             }
             self::_setContentType($file);
-            require($file);
+            $req['require']($file);
         };
     }
 

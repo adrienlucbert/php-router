@@ -8,5 +8,5 @@ $adminRouter = new Router();
 $adminRouter->use('/', isAuth());
 
 $adminRouter->get('/', function(&$req, callable $next) {
-    require __DIR__ . '/../views/admin.html';
+    $req['require'](__DIR__ . '/../views/admin.html');
 });
